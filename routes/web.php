@@ -28,6 +28,12 @@ Route::middleware('auth')->group(function () {
   Volt::route('/posts', 'posts.index');
   Volt::route('/posts/crud', 'posts.crud');
   Volt::route('/posts/{post}/edit', 'posts.crud');
+  Volt::route('/category', 'category.index');
+  Volt::route('/category/crud', 'category.crud');
+  Volt::route('/category/{category}/edit', 'category.crud');
+  Volt::route('/products', 'products.index');
+  Volt::route('/products/crud', 'products.crud');
+  Volt::route('/products/{product}/edit', 'products.crud');
 
   Route::get('/clear/{option?}', function ($option = null) {
     $logs = [];
