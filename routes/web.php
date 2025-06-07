@@ -24,6 +24,7 @@ Route::get('/logout', function () {
 Route::middleware('auth')->group(function () {
   Volt::route('/register', 'register')->name('register');
   Volt::route('/users', 'users.index');
+  Volt::route('/users/{user}/edit', 'users.crud');
   Volt::route('/carlos', 'carlos');
   Volt::route('/posts', 'posts.index');
   Volt::route('/posts/crud', 'posts.crud');
