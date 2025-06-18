@@ -11,7 +11,6 @@ Route::get('/', function () {
 
 Volt::route('/login', 'login')->name('login');
 
-
 Route::get('/logout', function () {
   auth()->logout();
   request()->session()->invalidate();
@@ -33,8 +32,8 @@ Route::middleware('auth')->group(function () {
   Volt::route('/category/crud', 'category.crud');
   Volt::route('/category/{category}/edit', 'category.crud');
   Volt::route('/products', 'products.index');
-  Volt::route('/products/crud', 'products.crud');
-  Volt::route('/products/{product}/edit', 'products.crud');
+  Volt::route('/products/crud/{product?}', 'products.crud');
+  // Volt::route('/products/{product}/edit', 'products.crud');
 
   Route::get('/clear/{option?}', function ($option = null) {
     $logs = [];

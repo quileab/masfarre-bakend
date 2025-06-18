@@ -31,8 +31,15 @@ new class extends Component {
     <x-table :headers="$headers" :rows="$categories" striped>
         @scope('actions', $category)
         <div class="flex">
-            <x-button icon="o-trash" wire:click="delete({{ $category['id'] }})" spinner class="btn-sm text-error" />
-            <x-button icon="o-pencil" link="/category/{{ $category['id'] }}/edit" spinner class="btn-sm text-primary" />
+            <x-dropdown>
+                <x-slot:trigger>
+                    <x-button icon="o-trash" class="btn-sm btn-error btn-ghost" />
+                </x-slot:trigger>
+                <x-button label="ELIMINAR" icon="o-trash" wire:click="delete({{ $category['id'] }})" spinner
+                    class="btn-sm text-error btn-ghost" />
+            </x-dropdown>
+            <x-button icon="o-pencil" link="/category/{{ $category['id'] }}/edit" spinner
+                class="btn-sm btn-ghost text-primary" />
         </div>
         @endscope
     </x-table>

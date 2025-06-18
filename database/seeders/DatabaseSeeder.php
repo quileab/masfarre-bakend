@@ -17,8 +17,17 @@ class DatabaseSeeder extends Seeder
 
         User::factory()->create([
             'name' => 'admin',
+            'role' => 'admin',
             'email' => 'admin@admin.com',
             'password' => bcrypt('admin123'),
         ]);
+        // create categories without factory here
+        \App\Models\Category::create(['id' => 1, 'name' => 'Pack']);
+        \App\Models\Category::create(['id' => 2, 'name' => 'Iluminación Inteligente']);
+        \App\Models\Category::create(['id' => 3, 'name' => 'Iluminación Ambiental']);
+        \App\Models\Category::create(['id' => 4, 'name' => 'Centro de Pista']);
+        \App\Models\Category::create(['id' => 5, 'name' => 'Iluminación Puntual']);
+        \App\Models\Category::create(['id' => 6, 'name' => 'Pantallas']);
+        \App\Models\Category::create(['id' => 7, 'name' => 'Efectos Especiales']);
     }
 }
