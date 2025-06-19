@@ -35,10 +35,26 @@ Route::get('/user/{id}', function ($id) {
 });
 // return all posts with attribute status published
 Route::get('/posts/{category?}', function ($category = null) {
-    $query = \App\Models\Post::where('status', 'published')
+    $query = \App\Models\Post::select('title', 'image', 'content', 'category')
+    ->where('status', 'published')
+    /// ultimos 5 ordenardos por fecha descendentes 
+    ->orderBy('updated_at', 'desc')->limit(5)
         ->when($category, function ($query) use ($category) {
             return $query->where('category', $category);
         });
     $posts = $query->get();
     return response()->json($posts);
+});
+// return all categories
+Route::get('/categories', function () {
+    $categories = \App\Models\Category::select('id', 'name')->get();
+    return response()->json($categories);
+});
+
+// return all news products filtered by category
+Route::get('/products/{category?}', function ($category = null) {
+    $query = \App\Models\Product::when($category, function ($query) use ($category) {
+            return $query->where('category', $category);
+        });
+    return response()->json($query->get());
 });
