@@ -46,9 +46,21 @@ class User extends Authenticatable
         ];
     }
 
-    public function caca($algo)
+    // Presupuestos creados por este usuario (si es admin)
+    public function budgetsCreated()
     {
-        //uppercase
-        return strtoupper($algo);
+        return $this->hasMany(Budget::class, 'admin_id');
+    }
+
+    // Presupuestos asignados como cliente
+    public function budgetsReceived()
+    {
+        return $this->hasMany(Budget::class, 'client_id');
+    }
+
+
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
     }
 }
