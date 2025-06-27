@@ -29,7 +29,7 @@ Route::middleware('auth')->group(function () {
   Volt::route('/posts/crud', 'posts.crud');
   Volt::route('/posts/{post}/edit', 'posts.crud');
   Volt::route('/category', 'category.index');
-  Volt::route('/budget', 'budget.index');
+  Volt::route('/budgets', 'budget.index');
   Volt::route('/budget/crud/{budget?}', 'budget.crud');
   Volt::route('/category/crud', 'category.crud');
   Volt::route('/category/{category}/edit', 'category.crud');

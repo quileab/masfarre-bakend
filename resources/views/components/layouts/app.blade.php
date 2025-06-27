@@ -56,7 +56,7 @@
                 <x-menu-item title="Usuarios" icon="o-users" link="/users" />
                 <x-menu-item title="Productos" icon="o-cube" link="/products" />
                 <x-menu-item title="Categorias" icon="o-users" link="/category" />
-                <x-menu-item title="Presupuestos" icon="o-document-currency-dollar" link="/budget" />
+                <x-menu-item title="Presupuestos" icon="o-document-currency-dollar" link="/budgets" />
                 <x-menu-item title="Noticias" icon="o-newspaper" link="/posts" />
                 <x-menu-item title="Crear Noticia" icon="o-newspaper" link="/posts/crud" />
 
