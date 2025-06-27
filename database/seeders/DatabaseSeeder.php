@@ -29,5 +29,11 @@ class DatabaseSeeder extends Seeder
         \App\Models\Category::create(['id' => 5, 'name' => 'Iluminación Puntual']);
         \App\Models\Category::create(['id' => 6, 'name' => 'Pantallas']);
         \App\Models\Category::create(['id' => 7, 'name' => 'Efectos Especiales']);
+        // tipos de eventos
+        \App\Models\EventType::create(['id' => 1, 'name' => 'Cumpleaños de 15']);
+        \App\Models\EventType::create(['id' => 2, 'name' => 'Casamientos']);
+        \App\Models\EventType::create(['id' => 3, 'name' => 'Fiestas']);
+        \App\Models\EventType::create(['id' => 4, 'name' => 'Eventos']);
+        \App\Models\EventType::create(['id' => 5, 'name' => 'Otros']);
     }
 }
