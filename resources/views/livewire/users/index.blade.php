@@ -38,6 +38,7 @@ new class extends Component {
       ['key' => 'avatar', 'label' => '', 'class' => 'w-1'],
       ['key' => 'id', 'label' => '#', 'class' => 'w-1'],
       ['key' => 'name', 'label' => 'Name', 'class' => 'w-64'],
+      ['key' => 'role', 'label' => 'Role', 'class' => 'w-32'],
       ['key' => 'email', 'label' => 'E-mail', 'sortable' => false]
     ];
   }
@@ -77,21 +78,22 @@ new class extends Component {
 
 <div>
   <!-- HEADER -->
-  <x-header title="Hello" separator progress-indicator>
+  <x-header title="Usuarios" separator progress-indicator>
     <x-slot:middle class="!justify-end">
       <x-input placeholder="Search..." wire:model.live.debounce="search" clearable icon="o-magnifying-glass" />
     </x-slot:middle>
     <x-slot:actions>
       <x-button label="Filters" @click="$wire.drawer = true" responsive icon="o-funnel" />
       <x-badge value="{{ $records_count }}" class="badge-primary" />
+      <x-button label="Nuevo" icon="o-plus" link="/user" class="btn-primary" />
     </x-slot:actions>
   </x-header>
 
   <!-- TABLE  -->
   <x-card>
-    <x-table :headers="$headers" :rows="$users" :sort-by="$sortBy" link="users/{id}/edit" with-pagination>
+    <x-table :headers="$headers" :rows="$users" :sort-by="$sortBy" link="user/{id}" with-pagination>
       @scope('cell_avatar', $user)
-      <x-avatar image="{{ $user->avatar ?? '/empty-user.jpg' }}" class="!w-10" />
+      <x-avatar image="{{ $user->avatar ?? 'assets/images/empty-' . $user->role . '.jpg' }}" class="!w-10" />
       @endscope
       @scope('actions', $user)
       <x-button icon="o-trash" wire:click="delete({{ $user['id'] }})" wire:confirm="Are you sure?" spinner

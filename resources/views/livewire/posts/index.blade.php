@@ -93,12 +93,13 @@ new class extends Component {
     <x-slot:actions>
       <x-button label="Filters" @click="$wire.drawer = true" responsive icon="o-funnel" />
       <x-badge value="{{ $records_count }}" class="badge-primary" />
+      <x-button label="Nueva" icon="o-plus" link="/post/" class="btn-primary" />
     </x-slot:actions>
   </x-header>
 
   <!-- TABLE  -->
   <x-card>
-    <x-table :headers="$headers" :rows="$posts" :sort-by="$sortBy" link="posts/{id}/edit" with-pagination>
+    <x-table :headers="$headers" :rows="$posts" :sort-by="$sortBy" link="post/{id}" with-pagination>
       @scope('actions', $post)
       <x-button icon="o-trash" wire:click="delete({{ $post['id'] }})" wire:confirm="Are you sure?" spinner
         class="btn-ghost btn-sm text-red-500" />

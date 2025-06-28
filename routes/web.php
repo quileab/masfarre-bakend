@@ -23,19 +23,17 @@ Route::get('/logout', function () {
 Route::middleware('auth')->group(function () {
   Volt::route('/register', 'register')->name('register');
   Volt::route('/users', 'users.index');
-  Volt::route('/users/{user}/edit', 'users.crud');
+  Volt::route('/user/{user?}', 'users.crud');
   Volt::route('/carlos', 'carlos');
   Volt::route('/posts', 'posts.index');
-  Volt::route('/posts/crud', 'posts.crud');
-  Volt::route('/posts/{post}/edit', 'posts.crud');
-  Volt::route('/category', 'category.index');
+  Volt::route('/post/{post?}', 'posts.crud');
   Volt::route('/budgets', 'budget.index');
-  Volt::route('/budget/crud/{budget?}', 'budget.crud');
-  Volt::route('/category/crud', 'category.crud');
-  Volt::route('/category/{category}/edit', 'category.crud');
+  Volt::route('/budget/{budget?}', 'budget.crud');
+  Volt::route('/categories', 'category.index');
+  Volt::route('/category/{category?}', 'category.crud');
   Volt::route('/products', 'products.index');
-  Volt::route('/products/crud/{product?}', 'products.crud');
-  
+  Volt::route('/product/{product?}', 'products.crud');
+
   // Volt::route('/products/{product}/edit', 'products.crud');
 
   Route::get('/clear/{option?}', function ($option = null) {
