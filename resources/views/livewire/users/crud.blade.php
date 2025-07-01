@@ -127,7 +127,7 @@ new class extends Component {
             <x-button label="Volver" link="/users" />
             {{-- The important thing here is `type="submit"` --}}
             {{-- The spinner property is nice! --}}
-            <x-button label="Save" icon="o-check" spinner="save" type="submit" class="btn-primary" />
+            <x-button label="Guardar" icon="o-check" spinner="save" type="submit" class="btn-primary" />
         </x-slot:actions>
     </x-form>
 </div>

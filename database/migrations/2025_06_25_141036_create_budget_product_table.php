@@ -18,8 +18,8 @@ return new class extends Migration
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
 
             $table->integer('quantity');
-            $table->decimal('unit_price', 10, 2); // Precio del producto al momento del presupuesto
-            $table->decimal('subtotal', 12, 2); // quantity * unit_price
+            $table->decimal('price', 10, 2); // Precio del producto al momento del presupuesto
+            $table->string('notes', 100)->nullable(); // Notas adicionales
 
             $table->timestamps();
         });

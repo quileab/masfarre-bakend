@@ -5,15 +5,15 @@ use Livewire\Attributes\Rule;
 use Livewire\Attributes\Title;
 
 new #[Layout('components.layouts.empty')]       // <-- Here is the `empty` layout
-#[Title('Login')]
-class extends Component {
- 
+    #[Title('Login')]
+    class extends Component {
+
     #[Rule('required|email')]
     public string $email = '';
- 
+
     #[Rule('required')]
     public string $password = '';
- 
+
     public function mount()
     {
         // It is logged in
@@ -21,26 +21,26 @@ class extends Component {
             return redirect('/');
         }
     }
- 
+
     public function login()
     {
         $credentials = $this->validate();
- 
+
         if (auth()->attempt($credentials)) {
             request()->session()->regenerate();
- 
+
             return redirect()->intended('/posts');
         }
- 
+
         $this->addError('email', 'The provided credentials do not match our records.');
     }
 }; ?>
 
-<div> 
+<div>
     <x-form wire:submit="login">
         <x-input label="E-mail" wire:model="email" icon="o-envelope" inline />
         <x-input label="Password" wire:model="password" type="password" icon="o-key" inline />
- 
+
         <x-slot:actions>
             <x-button label="Create an account" class="btn-ghost" link="/register" />
             <x-button label="Login" type="submit" icon="o-paper-airplane" class="btn-primary" spinner="login" />

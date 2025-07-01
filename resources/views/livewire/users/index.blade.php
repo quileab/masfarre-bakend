@@ -16,14 +16,6 @@ new class extends Component {
   public bool $drawer = false;
   public array $sortBy = ['column' => 'name', 'direction' => 'asc'];
 
-  // Clear filters
-  public function clear(): void
-  {
-    $this->reset();
-    $this->resetPage();
-    $this->success('Filters cleared.', position: 'toast-bottom');
-  }
-
   // Delete action
   public function delete(User $user): void
   {
@@ -52,7 +44,7 @@ new class extends Component {
     $result = User::query()
       ->when($this->search, fn($q) => $q->where('name', 'like', "%$this->search%"))
       ->orderBy(...array_values($this->sortBy))
-      ->paginate(5);
+      ->paginate(20);
 
     $this->records_count = $result->total();
 
@@ -73,6 +65,16 @@ new class extends Component {
     if (!is_array($property) && $property != '') {
       $this->resetPage();
     }
+  }
+
+  public function bookmark(User $user): void
+  {
+    $this->dispatch('bookmark', 'user', [
+      'id' => $user->id,
+      'name' => $user->name,
+      'phone' => $user->phone,
+      'email' => $user->email
+    ]);
   }
 }; ?>
 
@@ -96,23 +98,14 @@ new class extends Component {
       <x-avatar image="{{ $user->avatar ?? 'assets/images/empty-' . $user->role . '.jpg' }}" class="!w-10" />
       @endscope
       @scope('actions', $user)
-      <x-button icon="o-trash" wire:click="delete({{ $user['id'] }})" wire:confirm="Are you sure?" spinner
-        class="btn-ghost btn-sm text-red-500" />
+      <div class="flex">
+        <x-button icon="o-trash" wire:click="delete({{ $user['id'] }})" wire:confirm="Are you sure?" spinner
+          class="btn-ghost btn-sm text-red-500" />
+        <x-button icon="o-bookmark" wire:click="bookmark({{ $user['id'] }})" spinner
+          class="btn-ghost btn-sm text-yellow-500" />
+      </div>
       @endscope
     </x-table>
   </x-card>
 
-  <!-- FILTER DRAWER -->
-  <x-drawer wire:model="drawer" title="Filters" right separator with-close-button class="lg:w-1/3">
-    <div class="grid gap-5">
-      <x-input placeholder="Search..." wire:model.live.debounce="search" icon="o-magnifying-glass"
-        @keydown.enter="$wire.drawer = false" />
-
-    </div>
-
-    <x-slot:actions>
-      <x-button label="Reset" icon="o-x-mark" wire:click="clear" spinner />
-      <x-button label="Done" icon="o-check" class="btn-primary" @click="$wire.drawer = false" />
-    </x-slot:actions>
-  </x-drawer>
 </div>

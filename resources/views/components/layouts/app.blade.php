@@ -50,6 +50,7 @@
                     </x-list-item>
 
                     <x-menu-separator />
+                    <livewire:bookmarks />
                 @endif
 
                 <x-menu-item title="Dashboard" icon="o-sparkles" link="/" />

@@ -54,9 +54,19 @@ class User extends Authenticatable
         return $this->hasMany(Budget::class, 'client_id');
     }
 
-
     public function isAdmin()
     {
         return $this->role === 'admin';
+    }
+
+    // Presupuestos creados por este usuario (si es admin)
+    public function budgets()
+    {
+        return $this->hasMany(Budget::class);
+    }
+
+    public static function getSessionUser()
+    {
+        return session()->get('user');
     }
 }

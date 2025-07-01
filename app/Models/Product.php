@@ -10,7 +10,7 @@ class Product extends Model
     public function budgets()
     {
         return $this->belongsToMany(Budget::class, 'budget_product')
-            ->withPivot('quantity', 'unit_price', 'subtotal')
+            ->withPivot('quantity', 'price', 'notes')
             ->withTimestamps();
     }
 

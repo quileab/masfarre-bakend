@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -8,15 +9,7 @@ class Budget extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'admin_id',
-        'client_id',
-        'category_id',
-        'title',
-        'notes',
-        'total',
-        'status',
-    ];
+    protected $guarded = [];
 
     // Usuario admin que creó el presupuesto
     public function admin()
@@ -40,7 +33,7 @@ class Budget extends Model
     public function products()
     {
         return $this->belongsToMany(Product::class, 'budget_product')
-            ->withPivot('quantity', 'unit_price', 'subtotal')
+            ->withPivot('quantity', 'price', 'notes')
             ->withTimestamps();
     }
 }
