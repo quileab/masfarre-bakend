@@ -29,7 +29,20 @@ new #[Layout('components.layouts.empty')]       // <-- Here is the `empty` layou
         if (auth()->attempt($credentials)) {
             request()->session()->regenerate();
 
-            return redirect()->intended('/posts');
+            $user = auth()->user();
+
+            if ($user->role === 'user') {
+                session([
+                    'user' => [
+                        'id' => $user->id,
+                        'name' => $user->name,
+                        'phone' => $user->phone,
+                        'email' => $user->email,
+                    ]
+                ]);
+                return redirect('/budgets');
+            }
+            return redirect()->intended('/dashboard');
         }
 
         $this->addError('email', 'The provided credentials do not match our records.');
@@ -42,8 +55,8 @@ new #[Layout('components.layouts.empty')]       // <-- Here is the `empty` layou
         <x-input label="Password" wire:model="password" type="password" icon="o-key" inline />
 
         <x-slot:actions>
-            <x-button label="Create an account" class="btn-ghost" link="/register" />
-            <x-button label="Login" type="submit" icon="o-paper-airplane" class="btn-primary" spinner="login" />
+            {{-- <x-button label="Create an account" class="btn-ghost" link="/register" /> --}}
+            <x-button label="LOGIN" type="submit" icon="o-lock-closed" class="btn-primary" spinner="login" />
         </x-slot:actions>
     </x-form>
 </div>

@@ -2,7 +2,6 @@
 
 use Livewire\Volt\Component;
 use App\Models\Budget;
-use Mary\Traits\Toast;
 
 new class extends Component {
 
@@ -30,8 +29,13 @@ new class extends Component {
 
     public function budgets()
     {
-        if(auth()->user()->role != 'admin') {
-            return Budget::where('client_id', auth()->user()->id)->with('client')->paginate(15);            
+        if (auth()->user()->role != 'admin') {
+            $clientId = session('user')['id'] ?? null;
+            if ($clientId) {
+                return Budget::where('client_id', $clientId)->with('client')->paginate(15);
+            } else {
+                return Budget::whereNull('client_id')->with('client')->paginate(15); // Or handle as appropriate if no client is selected
+            }
         }
         $result = Budget::with('client')//query()
             ->when($this->search, fn($q) => $q->where('name', 'like', "%$this->search%")) // Updated 'name' to 'title'
@@ -60,29 +64,32 @@ new class extends Component {
         </x-slot:middle>
         <x-slot:actions>
             <x-badge value="{{ $records_count }}" class="badge-primary" />
-            <x-button label="Nuevo" icon="o-check" class="btn-primary" link="/budget" />
+            @can('isAdmin')
+                <x-button label="Nuevo" icon="o-check" class="btn-primary" link="/budget" />
+            @endcan
         </x-slot:actions>
     </x-header>
 
     <!-- TABLE  -->
     <x-card>
-        <x-table :headers="$headers" :rows="$this->budgets()" :sort-by="$sortBy" link="budget/{id}" striped>
+        <x-table :headers="$headers" :rows="$this->budgets()" :sort-by="$sortBy"
+            link="{{ auth()->user()->role == 'admin' ? 'budget/{id}' : 'budgets/{id}/view' }}" striped>
             @scope('cell_total', $budget)
             <p class="text-right w-full text-warning">$&nbsp;{{ number_format($budget->total, 2) }}</p>
             @endscope
 
             @if(auth()->user()->role == 'admin')
-            @scope('actions', $budget)
-            <div class="flex">
-                <x-dropdown>
-                    <x-slot:trigger>
-                        <x-button icon="o-trash" class="btn-sm btn-error btn-ghost" />
-                    </x-slot:trigger>
-                    <x-button label="ELIMINAR" icon="o-trash" wire:click="delete({{ $budget['id'] }})" spinner
-                        class="btn-sm text-error btn-ghost" />
-                </x-dropdown>
-            </div>
-            @endscope
+                @scope('actions', $budget)
+                <div class="flex">
+                    <x-dropdown>
+                        <x-slot:trigger>
+                            <x-button icon="o-trash" class="btn-sm btn-error btn-ghost" />
+                        </x-slot:trigger>
+                        <x-button label="ELIMINAR" icon="o-trash" wire:click="delete({{ $budget['id'] }})" spinner
+                            class="btn-sm text-error btn-ghost" />
+                    </x-dropdown>
+                </div>
+                @endscope
             @endif
         </x-table>
     </x-card>

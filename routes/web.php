@@ -2,11 +2,47 @@
 
 use Livewire\Volt\Volt;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
 
 // route to web /
 Route::get('/', function () {
-  return redirect('/posts');
+  return redirect('/dashboard');
   //return view('index');
+});
+
+//Maintenance route
+Route::get('/clear/{option?}', function ($option = null) {
+  $logs = [];
+  // if option is 'prod' then run composer install -autoloader --no-dev
+  if ($option == 'prod') {
+    $logs['Composer Install for PROD'] = Artisan::call('composer optimize-autoloader --no-dev');
+  }
+
+  $maintenance = ($option == "cache") ? [
+    'Flush' => 'cache:flush',
+  ] : [
+    //'DebugBar'=>'debugbar:clear',
+    'Storage Link' => 'storage:link',
+    'Config' => 'config:clear',
+    'Optimize Clear' => 'optimize:clear',
+    'Optimize' => 'optimize',
+    'Route Clear' => 'route:clear',
+    'Route Cache' => 'route:cache',
+    'View Clear' => 'view:clear',
+    'View Cache' => 'view:cache',
+    'Cache Clear' => 'cache:clear',
+    'Cache Config' => 'config:cache',
+  ];
+
+  foreach ($maintenance as $key => $value) {
+    try {
+      Artisan::call($value);
+      $logs[$key] = '✔️';
+    } catch (\Exception $e) {
+      $logs[$key] = '❌' . $e->getMessage();
+    }
+  }
+  return "<pre>" . print_r($logs, true) . "</pre><hr />";
 });
 
 Volt::route('/login', 'login')->name('login');
@@ -20,54 +56,24 @@ Route::get('/logout', function () {
 });
 
 // Protected routes
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'admin'])->group(function () {
   Volt::route('/register', 'register')->name('register');
+  Volt::route('/dashboard', 'dashboard');
   Volt::route('/users', 'users.index');
   Volt::route('/user/{user?}', 'users.crud');
   Volt::route('/carlos', 'carlos');
   Volt::route('/posts', 'posts.index');
   Volt::route('/post/{post?}', 'posts.crud');
-  Volt::route('/budgets', 'budget.index');
-  Volt::route('/budget/{budget?}', 'budget.crud');
-  Volt::route('/budgets/{budget}', 'budget.detail');
-  Volt::route('/categories', 'category.index');
-  Volt::route('/category/{category?}', 'category.crud');
   Volt::route('/products', 'products.index');
   Volt::route('/product/{product?}', 'products.crud');
+  Volt::route('/categories', 'category.index');
+  Volt::route('/category/{category?}', 'category.crud');
+  Volt::route('/budgets', 'budget.index');
+  Volt::route('/budgets/{budget?}', 'budget.detail');
+  Volt::route('/budget/{budget?}', 'budget.crud');
+});
 
-  // Volt::route('/products/{product}/edit', 'products.crud');
-
-  Route::get('/clear/{option?}', function ($option = null) {
-    $logs = [];
-    // if option is 'prod' then run composer install --optimize-autoloader --no-dev
-    if ($option == 'prod') {
-      $logs['Composer Install for PROD'] = Artisan::call('composer install --optimize-autoloader --no-dev');
-    }
-
-    $maintenance = ($option == "cache") ? [
-      'Flush' => 'cache:flush',
-    ] : [
-      //'DebugBar'=>'debugbar:clear',
-      'Storage Link' => 'storage:link',
-      'Config' => 'config:clear',
-      'Optimize Clear' => 'optimize:clear',
-      'Optimize' => 'optimize',
-      'Route Clear' => 'route:clear',
-      'Route Cache' => 'route:cache',
-      'View Clear' => 'view:clear',
-      'View Cache' => 'view:cache',
-      'Cache Clear' => 'cache:clear',
-      'Cache Config' => 'config:cache',
-    ];
-
-    foreach ($maintenance as $key => $value) {
-      try {
-        Artisan::call($value);
-        $logs[$key] = '✔️';
-      } catch (\Exception $e) {
-        $logs[$key] = '❌' . $e->getMessage();
-      }
-    }
-    return "<pre>" . print_r($logs, true) . "</pre><hr />";
-  });
+Route::middleware(['auth'])->group(function () {
+  Volt::route('/budgets', 'budget.index');
+  Volt::route('/budgets/{budget}/view', 'budget.user-show');
 });

@@ -17,10 +17,12 @@ new class extends Component {
 }; ?>
 
 <div>
-    {{-- show list of sessions where in sessionsToShow --}}
-    @foreach($sessionsToShow as $key => $session)
-        @if (session()->has($session))
-            <x-icon name="s-user-circle" label="{{ session()->get($session)['name'] }}" class="text-primary" />
-        @endif
-    @endforeach
+    {{-- if user is admin show --}}
+    @if(auth()->user()->role == "admin")
+        @foreach($sessionsToShow as $key => $session)
+            @if (session()->has($session))
+                <x-icon name="s-user-circle" label="{{ session()->get($session)['name'] }}" class="text-primary" />
+            @endif
+        @endforeach
+    @endif
 </div>

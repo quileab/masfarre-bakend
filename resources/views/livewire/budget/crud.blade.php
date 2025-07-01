@@ -31,12 +31,9 @@ new class extends Component {
 
     public function mount(Budget $budget)
     {
-        if (\App\Models\User::getSessionUser() == null) {
-            return redirect('/users');
-        }
         //chequear que el user sea admin
         if (auth()->user()->role != 'admin') {
-            return redirect('/');
+            return redirect()->back();
         }
 
         if (!$budget->exists) {
