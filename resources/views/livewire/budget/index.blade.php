@@ -30,6 +30,9 @@ new class extends Component {
 
     public function budgets()
     {
+        if(auth()->user()->role != 'admin') {
+            return Budget::where('client_id', auth()->user()->id)->with('client')->paginate(15);            
+        }
         $result = Budget::with('client')//query()
             ->when($this->search, fn($q) => $q->where('name', 'like', "%$this->search%")) // Updated 'name' to 'title'
             ->orderBy(...array_values($this->sortBy))
@@ -68,6 +71,7 @@ new class extends Component {
             <p class="text-right w-full text-warning">$&nbsp;{{ number_format($budget->total, 2) }}</p>
             @endscope
 
+            @if(auth()->user()->role == 'admin')
             @scope('actions', $budget)
             <div class="flex">
                 <x-dropdown>
@@ -79,6 +83,7 @@ new class extends Component {
                 </x-dropdown>
             </div>
             @endscope
+            @endif
         </x-table>
     </x-card>
 </div>

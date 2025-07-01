@@ -52,18 +52,17 @@
                     <x-menu-separator />
                     <livewire:bookmarks />
                 @endif
-
+                @if(auth()->user()->role == 'admin')
                 <x-menu-item title="Dashboard" icon="o-sparkles" link="/" />
                 <x-menu-item title="Usuarios" icon="o-users" link="/users" />
                 <x-menu-item title="Productos" icon="o-cube" link="/products" />
                 <x-menu-item title="Categorias" icon="o-users" link="/categories" />
                 <x-menu-item title="Presupuestos" icon="o-document-currency-dollar" link="/budgets" />
                 <x-menu-item title="Noticias" icon="o-newspaper" link="/posts" />
+                @else
+                <x-menu-item title="Presupuestos" icon="o-document-currency-dollar" link="/budgets" />
+                @endif
 
-                <x-menu-sub title="Settings" icon="o-cog-6-tooth">
-                    <x-menu-item title="Wifi" icon="o-wifi" link="####" />
-                    <x-menu-item title="Archives" icon="o-archive-box" link="####" />
-                </x-menu-sub>
             </x-menu>
         </x-slot:sidebar>
 
