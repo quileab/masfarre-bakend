@@ -50,7 +50,7 @@ new class extends Component {
 
     public function getBlankDaysProperty(): int
     {
-        return $this->currentDate->copy()->startOfMonth()->dayOfWeekIso % 7;
+        return $this->currentDate->copy()->startOfMonth()->dayOfWeekIso - 1;
     }
 }; ?>
 
