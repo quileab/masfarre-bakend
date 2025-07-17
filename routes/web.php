@@ -6,8 +6,7 @@ use Illuminate\Support\Facades\Artisan;
 
 // route to web /
 Route::get('/', function () {
-  return redirect('/dashboard');
-  //return view('index');
+  return view('landing');
 });
 
 //Maintenance route

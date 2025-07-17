@@ -1,0 +1,70 @@
+@import url("https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&family=Russo+One&display=swap");
+@import "tailwindcss";
+@theme {
+  --font-mulish: "Mulish", sans-serif;
+  --font-russo: "Russo One", sans-serif;
+  --masfarre-black: #000;
+  --masfarre-red: #c11720;
+  --masfarre-orange: #e86031;
+  --masfarre-fuchsia: #e83477;
+  --masfarre-violet: #a6539b;
+}
+
+* {
+  scroll-behavior: smooth;
+}
+
+.masf-red {
+  color: var(--masfarre-red);
+}
+.masf-orange {
+  color: var(--masfarre-orange);
+}
+.masf-fuchsia {
+  color: var(--masfarre-fuchsia);
+}
+.masf-violet {
+  color: var(--masfarre-violet);
+}
+
+.bg-masfarre-geometry {
+  background-image: url("../images/inspiration-geometry.png");
+  /* background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center; */
+}
+.bg-masfarre-party {
+  background-image: url("../images/food.png");
+  /* background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center; */
+}
+
+.clip-footer {
+  clip-path: polygon(0% 0%, 100% 14.75%, 100% 100%, 0% 85.75%);
+}
+
+.image-background {
+  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+    url("../images/backgroundheader.jpg");
+  background-size: cover;
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  float: left;
+}
+
+a.events-gallery > img {
+  @apply rounded-lg;
+  @apply transition-all;
+  @apply duration-500;
+  @apply ease-in-out;
+  /* hover brightness */
+  @apply hover:brightness-125;
+  /* image 4:3 */
+  aspect-ratio: 4 / 3;
+  /* image offset  */
+  object-position: center;
+  /* image cover */
+  object-fit: cover;
+}
