@@ -51,6 +51,8 @@ Route::get('/categories', function () {
     return response()->json($categories);
 });
 
+Route::get('/reviews', [App\Http\Controllers\GoogleMapsController::class, 'getReviews']);
+
 // return all news products filtered by category
 Route::get('/products/{category?}', function ($category = null) {
     $query = \App\Models\Product::when($category, function ($query) use ($category) {

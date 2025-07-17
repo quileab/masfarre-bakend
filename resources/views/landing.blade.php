@@ -11,6 +11,7 @@
                 <a href="#about" class="hover:text-red-700 font-bold">Nosotros</a>
                 <a href="#servicios" class="hover:text-orange-700 font-bold">Servicios</a>
                 <a href="#tendencias" class="hover:text-fuchsia-700 font-bold">Tendencias</a>
+                <a href="/login" target="_blank" class="hover:text-violet-700 font-bold">Login</a>
             </div>
 
             <button id="menu-toggle" class="md:hidden text-gray-600 hover:text-gray-800 focus:outline-none focus:text-gray-800
@@ -31,27 +32,28 @@
                 <a href="#" class="block hover:bg-gray-100/20 px-3 py-2 rounded">Nosotros</a>
                 <a href="#" class="block hover:bg-gray-100/20 px-3 py-2 rounded">Servicios</a>
                 <a href="#" class="block hover:bg-gray-100/20 px-3 py-2 rounded">Tendencias</a>
+                <a href="/login" target="_blank" class="block hover:bg-gray-100/20 px-3 py-2 rounded">Login</a>
             </div>
         </div>
     </nav>
     <section id="hero">
         <section id="hero" class="relative w-full">
-        <img src="{{ asset('frontend/images/backgroundheader.jpg') }}" alt="Fondo" class="w-full h-auto">
-        <div class="spectrum-container">
-            <div class="spectrum-bar"></div>
-            <div class="spectrum-bar"></div>
-            <div class="spectrum-bar"></div>
-            <div class="spectrum-bar"></div>
-            <div class="spectrum-bar"></div>
-            <div class="spectrum-bar"></div>
-            <div class="spectrum-bar"></div>
-            <div class="spectrum-bar"></div>
-            <div class="spectrum-bar"></div>
-            <div class="spectrum-bar"></div>
-            <div class="spectrum-bar"></div>
-            <div class="spectrum-bar"></div>
-        </div>
-    </section>
+            <img src="{{ asset('frontend/images/backgroundheader.jpg') }}" alt="Fondo" class="w-full h-auto">
+            <div class="spectrum-container">
+                <div class="spectrum-bar"></div>
+                <div class="spectrum-bar"></div>
+                <div class="spectrum-bar"></div>
+                <div class="spectrum-bar"></div>
+                <div class="spectrum-bar"></div>
+                <div class="spectrum-bar"></div>
+                <div class="spectrum-bar"></div>
+                <div class="spectrum-bar"></div>
+                <div class="spectrum-bar"></div>
+                <div class="spectrum-bar"></div>
+                <div class="spectrum-bar"></div>
+                <div class="spectrum-bar"></div>
+            </div>
+        </section>
     </section>
     <section id="about" class="m-8">
         <img src="{{ asset('frontend/images/about.jpg') }}" alt="Fondo"

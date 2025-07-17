@@ -41,7 +41,7 @@ new VenoBox({
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-  fetch('./gmComments.php')
+  fetch('/api/reviews')
     .then(response => response.json())
     .then(data => {
       const contenedor = document.getElementById('comentarios');
