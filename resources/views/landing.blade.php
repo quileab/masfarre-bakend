@@ -34,10 +34,28 @@
             </div>
         </div>
     </nav>
-    <img src="{{ asset('frontend/images/backgroundheader.jpg') }}" alt="Fondo" class="w-full">
-
+    <section id="hero">
+        <section id="hero" class="relative w-full">
+        <img src="{{ asset('frontend/images/backgroundheader.jpg') }}" alt="Fondo" class="w-full h-auto">
+        <div class="spectrum-container">
+            <div class="spectrum-bar"></div>
+            <div class="spectrum-bar"></div>
+            <div class="spectrum-bar"></div>
+            <div class="spectrum-bar"></div>
+            <div class="spectrum-bar"></div>
+            <div class="spectrum-bar"></div>
+            <div class="spectrum-bar"></div>
+            <div class="spectrum-bar"></div>
+            <div class="spectrum-bar"></div>
+            <div class="spectrum-bar"></div>
+            <div class="spectrum-bar"></div>
+            <div class="spectrum-bar"></div>
+        </div>
+    </section>
+    </section>
     <section id="about" class="m-8">
-        <img src="{{ asset('frontend/images/about.jpg') }}" alt="Fondo" class="w-full md:h-52 h-full object-cover rounded-2xl">
+        <img src="{{ asset('frontend/images/about.jpg') }}" alt="Fondo"
+            class="w-full md:h-52 h-full object-cover rounded-2xl">
         <div data-animate="animate__fadeInLeft" class="animate__animated animate__slow">
             <h1 class="text-3xl font-russo tracking-widest my-4">SOBRE <span class="masf-red">NOSOTROS</span></h1>
             <p class="text-justify indent-8 text-slate-500">
@@ -62,7 +80,8 @@
     </section>
 
     <section id="eventos" class="m-8">
-        <img src="{{ asset('frontend/images/ultevent.jpg') }}" alt="Fondo" class="w-full md:h-52 h-full object-cover rounded-2xl">
+        <img src="{{ asset('frontend/images/ultevent.jpg') }}" alt="Fondo"
+            class="w-full md:h-52 h-full object-cover rounded-2xl">
         <div data-animate="animate__fadeInLeft" class="animate__animated animate__slow">
             <h1 class="text-3xl font-russo tracking-widest my-4">ULTIMOS <span class="masf-orange">EVENTOS</span></h1>
             <p class="text-justify indent-8 text-slate-500">
@@ -109,7 +128,8 @@
     </section>
 
     <section id="about" class="m-8">
-        <img src="{{ asset('frontend/images/about.jpg') }}" alt="Fondo" class="w-full md:h-52 h-full object-cover rounded-2xl">
+        <img src="{{ asset('frontend/images/about.jpg') }}" alt="Fondo"
+            class="w-full md:h-52 h-full object-cover rounded-2xl">
         <div data-animate="animate__fadeInLeft" class="animate__animated animate__fast">
             <h1 class="text-3xl font-russo tracking-widest mt-4">ULTIMOS <span class="masf-fuchsia">POSTS</span></h1>
             <p class="text-justify indent-8 text-slate-500">
