@@ -59,7 +59,7 @@
         <img src="{{ asset('frontend/images/about.jpg') }}" alt="Fondo"
             class="w-full md:h-52 h-full object-cover rounded-2xl">
         <div data-animate="animate__fadeInLeft" class="animate__animated animate__slow">
-            <h1 class="text-3xl font-russo tracking-widest my-4">SOBRE <span class="masf-red">NOSOTROS</span></h1>
+            <h1 class="dark:text-gray-100 text-3xl font-russo tracking-widest my-4">SOBRE <span class="masf-red">NOSOTROS</span></h1>
             <p class="text-justify indent-8 text-slate-500">
                 En Masfarre Servicios Audiovisuales nos encanta formar parte de tus momentos más especiales. Nos
                 dedicamos a
@@ -85,7 +85,7 @@
         <img src="{{ asset('frontend/images/ultevent.jpg') }}" alt="Fondo"
             class="w-full md:h-52 h-full object-cover rounded-2xl">
         <div data-animate="animate__fadeInLeft" class="animate__animated animate__slow">
-            <h1 class="text-3xl font-russo tracking-widest my-4">ULTIMOS <span class="masf-orange">EVENTOS</span></h1>
+            <h1 class="dark:text-gray-100 text-3xl font-russo tracking-widest my-4">ULTIMOS <span class="masf-orange">EVENTOS</span></h1>
             <p class="text-justify indent-8 text-slate-500">
                 Conoce lo último en tendencias audiovisuales.
             </p>
@@ -122,7 +122,7 @@
     </section>
 
     <section id="contactus" class="flex bg-masfarre-geometry text-white bg-gray-900 p-8 align-middle items-center">
-        <h1 class="text-3xl font-russo py-4">Estamos disponibles para programar tu evento <span
+        <h1 class="dark:text-gray-100 text-3xl font-russo py-4">Estamos disponibles para programar tu evento <span
                 class="animate-ping">_</span></h1>
         <a href="#contact" class="hover:underline text-white/70 hover:text-white text-xl ml-4">
             Contactanos
@@ -133,7 +133,7 @@
         <img src="{{ asset('frontend/images/about.jpg') }}" alt="Fondo"
             class="w-full md:h-52 h-full object-cover rounded-2xl">
         <div data-animate="animate__fadeInLeft" class="animate__animated animate__fast">
-            <h1 class="text-3xl font-russo tracking-widest mt-4">ULTIMOS <span class="masf-fuchsia">POSTS</span></h1>
+            <h1 class="dark:text-gray-100 text-3xl font-russo tracking-widest mt-4">ULTIMOS <span class="masf-fuchsia">POSTS</span></h1>
             <p class="text-justify indent-8 text-slate-500">
                 Lo que dicen los que nos conocen
             </p>
@@ -146,10 +146,10 @@
 
     <section id="contact" class="m-8">
         <div data-animate="animate__fadeInLeft" class="animate__animated animate__slow">
-            <h1 class="text-3xl font-russo tracking-widest my-4">CONTACTANOS <span
+            <h1 class="dark:text-gray-100 text-3xl font-russo tracking-widest my-4">CONTACTANOS <span
                     class="masf-violet">¿HABLAMOS?...</span>
             </h1>
-            <div class=" grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="dark:text-gray-100 grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div id="contact-description">
                     <p class="text-justify indent-8 text-slate-500 mb-4">
                         Estamos acá para ayudarte. Podés completar el formulario en esta sección y nos pondremos en
@@ -161,17 +161,25 @@
                         directamente! Estamos para responder tus dudas y hacer realidad tus ideas.
                     </p>
                     <p class="leading-8">
+                        <a href="https://maps.app.goo.gl/Je13BybSzxHyjdCz6" target="_blank">
                         <i class="ph-bold ph-map-pin text-xl"></i>
                         <b>Direccion:</b> Olessio 817, Reconquista, Santa Fe 3560
+                        </a>
                         <br>
+                        <a href="mailto:edy@masfarre.com" target="_blank">
                         <i class="ph-bold ph-envelope text-xl"></i>
                         <b>Email:</b> edy@masfarre.com
+                        </a>
                         <br>
+                        <a href="https://wa.me/5493482610982" target="_blank">
                         <i class="ph-bold ph-phone text-xl"></i>
-                        <b>Teléfono:</b> +
+                        <b>Teléfono:</b> +5493482610982
+                        </a>
                         <br>
+                        <a href="https://www.instagram.com/masfarre.ok/" target="_blank">
                         <i class="ph-bold ph-instagram-logo text-xl"></i>
                         <b>Instagram:</b> @masfarre.ok
+                        </a>
                         <br>
                     </p>
 

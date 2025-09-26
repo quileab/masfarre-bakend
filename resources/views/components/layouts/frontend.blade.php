@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>{{ $title ?? 'Page Title' }}</title>
+    <title>Masfarré Sonido e Iluminación</title>
     <link rel="icon" type="image/png" href="{{ asset('favicon.ico') }}" />
     <link rel="stylesheet" type="text/css"
         href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/bold/style.css" />
@@ -15,7 +15,7 @@
     @vite(['resources/frontend/css/source.css', 'resources/frontend/js/main.js'])
 </head>
 
-<body>
+<body class="bg-gray-300 dark:bg-gray-900 text-[#1b1b18]">
     {{ $slot }}
     <script src="{{ asset('frontend/js/venobox.min.js') }}"></script>
 </body>
