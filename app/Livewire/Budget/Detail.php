@@ -20,9 +20,22 @@ class Detail extends Component
     public $searchTerm = '';
     public $selectedCategoryId = '';
 
-    public function mount(Budget $budget)
+    public function mount(Budget $budget = null)
     {
-        $this->budget = $budget->load('products', 'client', 'category');
+        if ($budget->exists) {
+            $this->budget = $budget->load('products', 'client', 'category');
+        } else {
+            if (!session()->has('selected_client_id')) {
+                $this->warning('Debes seleccionar un cliente para crear un presupuesto.');
+                $this->redirect('/users', navigate: true);
+                return;
+            }
+
+            $this->budget = new Budget();
+            $this->budget->client_id = session('selected_client_id');
+            $this->budget->total = 0;
+        }
+
         $this->categories = Category::all()->map(function ($category) {
             return ['id' => $category->id, 'name' => $category->name];
         })->toArray();

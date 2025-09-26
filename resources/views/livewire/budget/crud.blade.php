@@ -83,12 +83,19 @@ new class extends Component {
 }; ?>
 
 <div>
-    <x-card title="Presupuesto: {{ $this->client['name'] }}" shadow separator class="col-span-full">
+    <x-card title="Presupuesto: {{ $this->client['name'] ?? 'n/a' }}" shadow separator class="col-span-full">
         @if ($this->data['id'])
             <x-slot:menu>
                 <x-button label="Detalle" icon="o-document-currency-dollar" class="btn-primary"
                     link="/budgets/{{ $this->data['id'] }}" />
             </x-slot:menu>
+        @endif
+        @if($client == null)
+            <x-alert title="No se ha seleccionado un cliente" icon="o-exclamation-triangle" class="alert-error">
+                <x-slot:actions>
+                    <x-button label="Buscar" icon="o-user" link="/users" class="btn-primary" />
+                </x-slot:actions>
+            </x-alert>
         @endif
         <x-form wire:submit="updateOrCreate">
             <x-input label="Nombre del Presupuesto" wire:model="data.name" />
@@ -101,10 +108,12 @@ new class extends Component {
             </div>
             <x-textarea label="Notas" wire:model="data.notes" placeholder="Sólo el texto necesario ..." rows="5" />
 
-            <x-slot:actions>
-                <x-button label="Volver" icon="o-x-mark" class="btn-secondary" link="/budgets" />
-                <x-button label="Guardar" icon="o-check" class="btn-primary" type="submit" spinner="save" />
-            </x-slot:actions>
+            @if ($client)
+                <x-slot:actions>
+                    <x-button label="Volver" icon="o-x-mark" class="btn-secondary" link="/budgets" />
+                    <x-button label="Guardar" icon="o-check" class="btn-primary" type="submit" spinner="save" />
+                </x-slot:actions>
+            @endif
         </x-form>
     </x-card>
 </div>
