@@ -134,6 +134,20 @@
             class="w-full md:h-52 h-full object-cover rounded-2xl">
         <div data-animate="animate__fadeInLeft" class="animate__animated animate__fast">
             <h1 class="dark:text-gray-100 text-3xl font-russo tracking-widest mt-4">ULTIMOS <span class="masf-fuchsia">POSTS</span></h1>
+            <div class="grid md:grid-cols-3 grid-cols-1 gap-8 mt-8">
+                <div class="card-glass masf-red">
+                    <h3 class="text-xl font-bold">Card 1</h3>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                </div>
+                <div class="card-glass masf-orange">
+                    <h3 class="text-xl font-bold">Card 2</h3>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                </div>
+                <div class="card-glass masf-fuchsia">
+                    <h3 class="text-xl font-bold">Card 3</h3>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                </div>
+            </div>
             <p class="text-justify indent-8 text-slate-500">
                 Lo que dicen los que nos conocen
             </p>

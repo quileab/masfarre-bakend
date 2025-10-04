@@ -104,3 +104,26 @@ a.events-gallery > img {
 .spectrum-bar:nth-child(4n + 2) { background-color: rgba(232, 96, 49, 0.5); } 
 .spectrum-bar:nth-child(4n + 3) { background-color: rgba(232, 52, 119, 0.5); } 
 .spectrum-bar:nth-child(4n + 4) { background-color: rgba(166, 83, 155, 0.5); }
+
+.card-glass {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 1.5rem;
+  color: white;
+}
+
+.card-glass.masf-red {
+    background: rgba(193, 23, 32, 0.5);
+}
+
+.card-glass.masf-orange {
+    background: rgba(232, 96, 49, 0.5);
+}
+
+.card-glass.masf-fuchsia {
+    background: rgba(232, 52, 119, 0.5);
+}
