@@ -1,4 +1,5 @@
 <x-layouts.frontend>
+    <div class="cursor-light"></div>
     <!-- Responsive Navbar with vanilla JS -->
     <nav class="bg-white shadow-md dark:bg-gray-800 dark:text-white">
         <div class="container mx-auto px-4 py-3 flex items-center justify-between">
@@ -60,7 +61,7 @@
             class="w-full md:h-52 h-full object-cover rounded-2xl">
         <div data-animate="animate__fadeInLeft" class="animate__animated animate__slow">
             <h1 class="dark:text-gray-100 text-3xl font-russo tracking-widest my-4">SOBRE <span class="masf-red">NOSOTROS</span></h1>
-            <p class="text-justify indent-8 text-slate-500">
+            <p class="text-justify text-slate-500">
                 En Masfarre Servicios Audiovisuales nos encanta formar parte de tus momentos más especiales. Nos
                 dedicamos a
                 llevar la mejor tecnología y creatividad a cada evento, desde pantallas LED y fotografía hasta DJ,
@@ -72,10 +73,10 @@
                 casamientos hasta eventos empresariales, ponemos toda la onda y profesionalismo para que tu evento quede
                 en la
                 memoria de todos.
-            <p class="text-justify indent-8 text-slate-500">
+            <p class="text-justify text-slate-500">
                 No solo hacemos eventos, creamos experiencias que se viven y disfrutan a pleno.
             </p>
-            <p class="text-justify indent-8 text-slate-500">
+            <p class="text-justify text-slate-500">
                 Si buscás algo diferente, <i>¡acá estamos para hacerlo realidad!</i>
             </p>
         </div>
@@ -86,7 +87,7 @@
             class="w-full md:h-52 h-full object-cover rounded-2xl">
         <div data-animate="animate__fadeInLeft" class="animate__animated animate__slow">
             <h1 class="dark:text-gray-100 text-3xl font-russo tracking-widest my-4">ULTIMOS <span class="masf-orange">EVENTOS</span></h1>
-            <p class="text-justify indent-8 text-slate-500">
+            <p class="text-justify text-slate-500">
                 Conoce lo último en tendencias audiovisuales.
             </p>
         </div>
@@ -135,20 +136,21 @@
         <div data-animate="animate__fadeInLeft" class="animate__animated animate__fast">
             <h1 class="dark:text-gray-100 text-3xl font-russo tracking-widest mt-4">ULTIMOS <span class="masf-fuchsia">POSTS</span></h1>
             <div class="grid md:grid-cols-3 grid-cols-1 gap-8 mt-8">
-                <div class="card-glass masf-red">
-                    <h3 class="text-xl font-bold">Card 1</h3>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                </div>
-                <div class="card-glass masf-orange">
-                    <h3 class="text-xl font-bold">Card 2</h3>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                </div>
-                <div class="card-glass masf-fuchsia">
-                    <h3 class="text-xl font-bold">Card 3</h3>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                </div>
+                @php
+                    $colors = ['masf-red', 'masf-orange', 'masf-fuchsia'];
+                @endphp
+                @foreach ($posts as $key => $post)
+                    <div class="card-glass {{ $colors[$key % count($colors)] }}">
+                        <img src="{{ $post->image_url }}" alt="{{ $post->title }}" class="w-full h-32 object-cover rounded-t-lg mb-4">
+                        <h3 class="text-xl font-bold">{{ $post->title }}</h3>
+                        <div id="post-content-{{ $post->id }}" class="post-content-collapsed" style="overflow: hidden; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical;">
+                            {!! $post->content !!}
+                        </div>
+                        <a href="#" class="read-more-btn text-blue-500 hover:underline" data-target="post-content-{{ $post->id }}">Leer más...</a>
+                    </div>
+                @endforeach
             </div>
-            <p class="text-justify indent-8 text-slate-500">
+            <p class="text-justify text-slate-500 mt-8">
                 Lo que dicen los que nos conocen
             </p>
             <!-- respuesta de JSON -->
@@ -165,7 +167,7 @@
             </h1>
             <div class="dark:text-gray-100 grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div id="contact-description">
-                    <p class="text-justify indent-8 text-slate-500 mb-4">
+                    <p class="text-justify text-slate-500 mb-4">
                         Estamos acá para ayudarte. Podés completar el formulario en esta sección y nos pondremos en
                         contacto con vos
                         lo
@@ -199,7 +201,13 @@
 
                 </div>
                 <div>
-                    <form class="p-4 shadow-md rounded-md" action="sendmail.php" method="POST">
+                    @if(session('success'))
+                        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+                            <span class="block sm:inline">{{ session('success') }}</span>
+                        </div>
+                    @endif
+                    <form class="p-4 shadow-md rounded-md" action="{{ route('contact.send') }}" method="POST">
+                        @csrf
                         <input name="fullname" class="w-full p-2 rounded-md border border-gray-300 mb-4" type="text"
                             placeholder="Apellido y Nombre" required>
                         <input name="email" class="w-full p-2 rounded-md border border-gray-300 mb-4" type="email"
@@ -234,3 +242,31 @@
     </section>
 
 </x-layouts.frontend>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const light = document.querySelector('.cursor-light');
+        if (light) {
+            document.addEventListener('mousemove', function(e) {
+                light.style.left = e.clientX + 'px';
+                light.style.top = e.clientY + 'px';
+            });
+        }
+
+        const readMoreBtns = document.querySelectorAll('.read-more-btn');
+        readMoreBtns.forEach(btn => {
+            const targetId = btn.getAttribute('data-target');
+            const content = document.getElementById(targetId);
+
+            // Check if the content is overflowing
+            if (content.offsetHeight >= content.scrollHeight) {
+                btn.style.display = 'none';
+            }
+
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                content.style.display = (content.style.display === '-webkit-box') ? 'block' : '-webkit-box';
+                this.textContent = (content.style.display === 'block') ? 'Leer menos' : 'Leer más...';
+            });
+        });
+    });
+</script>

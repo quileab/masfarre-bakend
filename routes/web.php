@@ -2,12 +2,17 @@
 
 use Livewire\Volt\Volt;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ContactController;
 use Illuminate\Support\Facades\Artisan;
+use App\Models\Post;
 
 // route to web /
 Route::get('/', function () {
-  return view('landing');
+  $posts = Post::where('status', 'published')->latest()->take(3)->get();
+  return view('landing', ['posts' => $posts]);
 });
+
+Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
 
 //Maintenance route
 Route::get('/clear/{option?}', function ($option = null) {
