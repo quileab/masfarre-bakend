@@ -36,4 +36,10 @@ class Budget extends Model
             ->withPivot('quantity', 'price', 'notes')
             ->withTimestamps();
     }
+
+    // Transacciones (Pagos y Adicionales)
+    public function transactions()
+    {
+        return $this->hasMany(BudgetTransaction::class);
+    }
 }

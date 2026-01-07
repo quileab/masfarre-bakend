@@ -39,6 +39,10 @@
         </table>
     </div>
 
+    <div class="my-8">
+        <livewire:budget.wallet :budget="$budget" />
+    </div>
+
     <div class="mt-4">
         <x-button label="Volver" link="/budgets" icon="o-arrow-left" class="btn-primary" />
     </div>

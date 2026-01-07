@@ -47,7 +47,7 @@ Route::get('/clear/{option?}', function ($option = null) {
     }
   }
   return "<pre>" . print_r($logs, true) . "</pre><hr />";
-});
+})->middleware(['auth', 'admin']);
 
 Volt::route('/login', 'login')->name('login');
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="dark">
 
 <head>
     <meta charset="utf-8">
@@ -53,14 +53,14 @@
                     <livewire:bookmarks />
                 @endif
                 @if(auth()->user()->role == 'admin')
-                <x-menu-item title="Dashboard" icon="o-sparkles" link="/" />
-                <x-menu-item title="Usuarios" icon="o-users" link="/users" />
-                <x-menu-item title="Productos" icon="o-cube" link="/products" />
-                <x-menu-item title="Categorias" icon="o-users" link="/categories" />
-                <x-menu-item title="Presupuestos" icon="o-document-currency-dollar" link="/budgets" />
-                <x-menu-item title="Noticias" icon="o-newspaper" link="/posts" />
+                    <x-menu-item title="Dashboard" icon="o-sparkles" link="/" />
+                    <x-menu-item title="Usuarios" icon="o-users" link="/users" />
+                    <x-menu-item title="Productos" icon="o-cube" link="/products" />
+                    <x-menu-item title="Categorias" icon="o-users" link="/categories" />
+                    <x-menu-item title="Presupuestos" icon="o-document-currency-dollar" link="/budgets" />
+                    <x-menu-item title="Noticias" icon="o-newspaper" link="/posts" />
                 @else
-                <x-menu-item title="Presupuestos" icon="o-document-currency-dollar" link="/budgets" />
+                    <x-menu-item title="Presupuestos" icon="o-document-currency-dollar" link="/budgets" />
                 @endif
 
             </x-menu>
