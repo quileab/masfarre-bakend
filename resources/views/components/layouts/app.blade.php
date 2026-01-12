@@ -27,7 +27,7 @@
     </x-nav>
 
     {{-- MAIN --}}
-    <x-main>
+    <x-main full-width>
         {{-- SIDEBAR --}}
         <x-slot:sidebar drawer="main-drawer" collapsible class="bg-base-100 lg:bg-inherit">
 
@@ -57,10 +57,8 @@
                     <x-menu-item title="Usuarios" icon="o-users" link="/users" />
                     <x-menu-item title="Productos" icon="o-cube" link="/products" />
                     <x-menu-item title="Categorias" icon="o-users" link="/categories" />
-                    <x-menu-item title="Presupuestos" icon="o-document-currency-dollar" link="/budgets" />
                     <x-menu-item title="Noticias" icon="o-newspaper" link="/posts" />
                 @else
-                    <x-menu-item title="Presupuestos" icon="o-document-currency-dollar" link="/budgets" />
                 @endif
 
             </x-menu>

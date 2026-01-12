@@ -16,13 +16,6 @@ new class extends Component {
   public bool $drawer = false;
   public array $sortBy = ['column' => 'name', 'direction' => 'asc'];
 
-  // Delete action
-  public function delete(User $user): void
-  {
-    $user->delete();
-    $this->warning("$user->name deleted", 'Good bye!', position: 'toast-bottom');
-  }
-
   // Table headers
   public function headers(): array
   {
@@ -66,16 +59,6 @@ new class extends Component {
       $this->resetPage();
     }
   }
-
-  public function bookmark(User $user): void
-  {
-    $this->dispatch('bookmark', 'user', [
-      'id' => $user->id,
-      'name' => $user->name,
-      'phone' => $user->phone,
-      'email' => $user->email
-    ]);
-  }
 }; ?>
 
 <div>
@@ -95,14 +78,6 @@ new class extends Component {
     <x-table :headers="$headers" :rows="$users" :sort-by="$sortBy" link="user/{id}" with-pagination>
       @scope('cell_avatar', $user)
       <x-avatar image="{{ $user->avatar ?? 'assets/images/empty-' . $user->role . '.jpg' }}" class="!w-10" />
-      @endscope
-      @scope('actions', $user)
-      <div class="flex">
-        <x-button icon="o-trash" wire:click="delete({{ $user['id'] }})" wire:confirm="Are you sure?" spinner
-          class="btn-ghost btn-sm text-red-500" />
-        <x-button icon="o-bookmark" wire:click="bookmark({{ $user['id'] }})" spinner
-          class="btn-ghost btn-sm text-yellow-500" />
-      </div>
       @endscope
     </x-table>
   </x-card>

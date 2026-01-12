@@ -11,6 +11,10 @@ class Budget extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'date' => 'date',
+    ];
+
     // Usuario admin que creó el presupuesto
     public function admin()
     {

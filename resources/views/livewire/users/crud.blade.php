@@ -55,6 +55,10 @@ new class extends Component {
         $this->user->province = $user->province ?? '';
         $this->role_id = $user->role == 'admin' ? 2 : 1;
         $this->fill($this->user);
+
+        if ($this->user->exists) {
+            $this->bookmark();
+        }
     }
 
     public function save(): void
@@ -86,15 +90,45 @@ new class extends Component {
     //     $this->user->languages()->sync($this->my_languages);
     //     if ($this->photo) {
     //         $url = $this->photo->store('users', 'public');
-    //         $this->user->update(['avatar' => "/storage/$url"]);
-    //     }
-    //     // You can toast and redirect to any route
-    //     $this->success('User updated with success.', redirectTo: '/users');
-    // }
+    public function bookmark(): void
+    {
+        $data = [
+            'id' => $this->user->id,
+            'name' => $this->user->name,
+            'phone' => $this->user->phone,
+            'email' => $this->user->email
+        ];
+
+        session()->put('user', $data);
+
+        $this->dispatch('bookmark', 'user', $data);
+    }
+
+    public function delete(): void
+    {
+        $this->user->delete();
+        $this->warning("{$this->user->name} deleted", 'Good bye!', position: 'toast-bottom', redirectTo: '/users');
+    }
 }; ?>
 
 <div>
-    <x-header title="Usuario {{ $user->name }}" separator />
+    <x-header title="Usuario {{ $user->name }}" separator>
+        <x-slot:actions>
+            @if($user->exists)
+                <x-button label="Presupuestos" icon="o-banknotes" link="/budgets?client_id={{ $user->id }}"
+                    class="btn-outline btn-info" />
+                <x-button label="Pagos" icon="o-currency-dollar" link="/users/{{ $user->id }}/payments"
+                    class="btn-outline btn-success" />
+                <x-dropdown>
+                    <x-slot:trigger>
+                        <x-button icon="o-trash" class="btn-outline btn-error" />
+                    </x-slot:trigger>
+                    <x-button label="Confirmar" icon="o-check" wire:click="delete" spinner
+                        class="btn-ghost btn-sm text-red-500" />
+                </x-dropdown>
+            @endif
+        </x-slot:actions>
+    </x-header>
     <x-form wire:submit="save">
         {{-- <x-file label="Avatar" wire:model="photo" accept="image/png, image/jpeg">
             <img src="{{ $user->avatar ?? '/empty-user.jpg' }}" class="h-40 rounded-lg" />

@@ -2,8 +2,15 @@
 
 use Livewire\Volt\Component;
 use App\Models\Budget;
+use App\Http\Controllers\PdfController;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Livewire\Attributes\Url;
 
 new class extends Component {
+
+    #[Url]
+    public $client_id = '';
 
     public string $search = '';
     public int $records_count = 0;
@@ -14,6 +21,23 @@ new class extends Component {
     {
         $budgetId->delete();
         //$this->budgets = Budget::all();
+    }
+
+    public function share(Budget $budget)
+    {
+        $id = str_pad($budget->id, 8, '0', STR_PAD_LEFT);
+        $lastName = $budget->client ? Str::slug($budget->client->name) : 'cliente';
+        if (empty($lastName)) $lastName = 'cliente';
+        
+        $filename = "{$id}_{$lastName}.pdf";
+        $path = "budgets/{$filename}";
+
+        if (Storage::disk('public')->exists($path)) {
+            $link = asset('storage/' . $path);
+            $this->dispatch('copy-link', link: $link);
+        } else {
+            $this->error('El PDF no existe.');
+        }
     }
 
     // Table headers
@@ -39,6 +63,7 @@ new class extends Component {
         }
         $result = Budget::with('client')//query()
             ->when($this->search, fn($q) => $q->where('name', 'like', "%$this->search%")) // Updated 'name' to 'title'
+            ->when($this->client_id, fn($q) => $q->where('client_id', $this->client_id))
             ->orderBy(...array_values($this->sortBy))
             ->paginate(15);
 
@@ -72,25 +97,85 @@ new class extends Component {
 
     <!-- TABLE  -->
     <x-card>
-        <x-table :headers="$headers" :rows="$this->budgets()" :sort-by="$sortBy"
+        <x-table :headers="$headers" :rows="$budgets" :sort-by="$sortBy"
             link="{{ auth()->user()->role == 'admin' ? 'budget/{id}' : 'budgets/{id}/view' }}" striped>
             @scope('cell_total', $budget)
             <p class="text-right w-full text-warning">$&nbsp;{{ number_format($budget->total, 2) }}</p>
             @endscope
 
-            @if(auth()->user()->role == 'admin')
-                @scope('actions', $budget)
-                <div class="flex">
-                    <x-dropdown>
-                        <x-slot:trigger>
-                            <x-button icon="o-trash" class="btn-sm btn-error btn-ghost" />
-                        </x-slot:trigger>
-                        <x-button label="ELIMINAR" icon="o-trash" wire:click="delete({{ $budget['id'] }})" spinner
-                            class="btn-sm text-error btn-ghost" />
-                    </x-dropdown>
-                </div>
-                @endscope
-            @endif
+             @scope('actions', $budget)
+                 @php
+                     $id = str_pad($budget->id, 8, '0', STR_PAD_LEFT);
+                     $lastName = $budget->client ? \Illuminate\Support\Str::slug($budget->client->name) : 'cliente';
+                     if (empty($lastName)) $lastName = 'cliente';
+                     $filename = "{$id}_{$lastName}.pdf";
+                     $path = "budgets/{$filename}";
+                     $exists = \Illuminate\Support\Facades\Storage::disk('public')->exists($path);
+                 @endphp
+                 <div class="flex gap-1 items-center">
+                    <button wire:click="{{ $exists ? 'share(' . $budget['id'] . ')' : '' }}" 
+                            class="btn btn-sm {{ $exists ? 'btn-ghost text-primary' : 'btn-ghost text-error' }}"
+                            title="{{ $exists ? 'Copiar enlace público' : 'PDF no generado' }}">
+                        <x-icon name="{{ $exists ? 'o-share' : 'o-link-slash' }}" class="w-6 h-6" />
+                    </button>
+                    @if($exists)
+                        <a href="{{ asset('storage/' . $path) }}" target="_blank" class="btn btn-sm btn-ghost text-success" title="Ver PDF">
+                            <x-icon name="o-link" class="w-6 h-6" />
+                        </a>
+                    @endif
+                 </div>
+             @endscope
         </x-table>
     </x-card>
+
+    <script>
+        document.addEventListener('livewire:initialized', () => {
+            const showSuccessToast = (message) => {
+                window.dispatchEvent(new CustomEvent('mary-toast', {
+                    detail: {
+                        toast: {
+                            title: "Copiado",
+                            description: message,
+                            type: "success",
+                            position: "toast-bottom toast-end",
+                            timeout: 3000,
+                            icon: "o-check",
+                            css: "alert-success"
+                        }
+                    }
+                }));
+            };
+
+            Livewire.on('copy-link', (event) => {
+                let link = event.link;
+                if (!link && event[0] && event[0].link) link = event[0].link;
+
+                if (!link) return;
+
+                if (navigator.clipboard && window.isSecureContext) {
+                    navigator.clipboard.writeText(link).then(() => {
+                        showSuccessToast('Enlace copiado al portapapeles');
+                    }).catch(err => {
+                        console.error('Async: Could not copy text: ', err);
+                    });
+                } else {
+                    let textArea = document.createElement("textarea");
+                    textArea.value = link;
+                    textArea.style.position = "fixed";
+                    textArea.style.left = "-9999px";
+                    textArea.style.top = "0";
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+                    try {
+                        document.execCommand('copy');
+                        showSuccessToast('Enlace copiado al portapapeles');
+                    } catch (err) {
+                        console.error('Fallback: Oops, unable to copy', err);
+                    }
+                    document.body.removeChild(textArea);
+                }
+            });
+        });
+    </script>
 </div>
