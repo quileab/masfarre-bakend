@@ -190,13 +190,13 @@ new class extends Component {
                         // Si el post ya existe y tiene una imagen guardada en la base de datos
                         $imageUrl = Storage::disk('public')->exists($post->image)
                             ? Storage::url($post->image)
-                            : asset('assets/images/empty.jpg');
+                            : asset('images/empty.jpg');
                     } elseif ($photo) {
                         // Si hay una nueva imagen subida temporalmente
                         $imageUrl = $photo->temporaryUrl();
                     } else {
                         // Si no hay imagen, mostrar una imagen por defecto
-                        $imageUrl = asset('assets/images/empty.jpg');
+                        $imageUrl = asset('images/empty.jpg');
                     }
                 @endphp
                 <img src="{{ $imageUrl }}" class="h-40 rounded-lg object-cover" alt="Previsualización de la imagen" />

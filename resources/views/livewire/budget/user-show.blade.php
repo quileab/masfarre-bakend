@@ -4,7 +4,7 @@
             <strong>Cliente:</strong> {{ $budget->client?->name }}
         </x-slot:middle>
         <x-slot:actions>
-            <strong>Total:</strong>$ {{ number_format($budget->total, 2) }}
+            <strong>Total:</strong>$ {{ number_format($budget->total, 2, ",", ".") }}
         </x-slot:actions>
     </x-header>
 
@@ -26,8 +26,8 @@
                         <td>{{ $product->name }}</td>
                         <td>{{ $product->pivot->quantity }}</td>
                         <td>{{ $product->pivot->notes }}</td>
-                        <td class="text-right">$ {{ number_format($product->pivot->price, 2) }}</td>
-                        <td class="text-right">$ {{ number_format($product->pivot->quantity * $product->pivot->price, 2) }}
+                        <td class="text-right">$ {{ number_format($product->pivot->price, 2, ",", ".") }}</td>
+                        <td class="text-right">$ {{ number_format($product->pivot->quantity * $product->pivot->price, 2, ",", ".") }}
                         </td>
                     </tr>
                 @empty
@@ -39,11 +39,18 @@
         </table>
     </div>
 
-    <div class="my-8">
-        <livewire:budget.wallet :budget="$budget" />
-    </div>
+     <div class="my-8">
+         <div class="flex justify-between items-center mb-4">
+             <h3 class="text-xl font-semibold">Cuenta Corriente</h3>
+             @php $user = auth()->user() @endphp
+             @if($budget->status === 'approved' && $user && $user->role === 'admin')
+                 <x-button label="Gestionar Pagos" icon="o-currency-dollar" class="btn-info btn-sm" link="/budget/{{ $budget->id }}/payments" />
+             @endif
+         </div>
+         <livewire:budget.wallet :budget="$budget" />
+     </div>
 
-    <div class="mt-4">
-        <x-button label="Volver" link="/budgets" icon="o-arrow-left" class="btn-primary" />
-    </div>
+     <div class="mt-4">
+         <x-button label="Volver" link="/budgets" icon="o-arrow-left" class="btn-primary" />
+     </div>
 </div>

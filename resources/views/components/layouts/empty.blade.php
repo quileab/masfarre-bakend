@@ -8,20 +8,18 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="font-sans antialiased
-    flex flex-col align-center justify-center h-screen"
-    style="background-image: url('assets/images/background.webp'); background-size: cover; background-position: center; background-attachment: fixed;">
-    <x-main>
-        <x-slot:content>
-            <div class="mx-auto w-72 bg-slate-800/60 backdrop-blur-md rounded-lg shadow-md p-4">
-                <div class="my-4 text-center">
-                    {{-- logo --}}
-                    <img src="assets/images/logo-transp.png" class="w-1/3 mx-auto">
-                </div>
-                {{ $slot }}
-            </div>
-        </x-slot:content>
-    </x-main>
-</body>
+<body class="min-h-screen font-sans antialiased bg-base-200/50 dark:bg-base-200"
+    style="background-image: url('images/background.webp'); background-size: cover; background-position: center; background-attachment: fixed;">
+
+    {{-- STARTS --}}
+    <div id="particles-js" class="fixed inset-0 z-0 pointer-events-none"></div>
+
+    <div class="relative grid min-h-screen place-content-center">
+        <div class="mb-8 text-center">
+            <img src="images/logo-transp.png" class="w-1/3 mx-auto">
+        </div>
+
+        {{ $slot }}
+    </div>
 
 </html>

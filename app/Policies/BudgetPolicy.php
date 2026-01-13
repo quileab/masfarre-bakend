@@ -12,7 +12,7 @@ class BudgetPolicy
      */
     public function view(User $user, Budget $budget): bool
     {
-        return $user->id === $budget->client_id || $user->is_admin;
+        return $user->id === $budget->client_id || $user->role === 'admin';
     }
 
     /**
@@ -20,7 +20,7 @@ class BudgetPolicy
      */
     public function update(User $user, Budget $budget): bool
     {
-        return $user->is_admin;
+        return $user->role === 'admin';
     }
 
     /**
@@ -28,7 +28,7 @@ class BudgetPolicy
      */
     public function delete(User $user, Budget $budget): bool
     {
-        return $user->is_admin;
+        return $user->role === 'admin';
     }
 
     /**
@@ -36,6 +36,6 @@ class BudgetPolicy
      */
     public function manageTransactions(User $user, Budget $budget): bool
     {
-        return $user->is_admin;
+        return $user->role === 'admin';
     }
 }

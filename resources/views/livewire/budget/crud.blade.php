@@ -45,7 +45,8 @@ new class extends Component {
 
     public function mount(Budget $budget)
     {
-        if (auth()->user()->role != 'admin') {
+        $user = auth()->user();
+        if ($user && $user->role !== 'admin') {
             return redirect()->back();
         }
 
@@ -74,6 +75,8 @@ new class extends Component {
     public function loadBudget(Budget $budget)
     {
         $this->data = $budget->toArray();
+        // Format date for HTML date input (yyyy-MM-dd)
+        $this->data['date'] = $budget->date ? $budget->date->format('Y-m-d') : '';
         $this->client = $budget->client;
         // $this->budgetProducts = ... // Removed: Computed property handles this
     }
@@ -251,13 +254,17 @@ new class extends Component {
             <x-textarea label="Notas" wire:model="data.notes" placeholder="Sólo el texto necesario ..." rows="3"
                 class="mt-4" />
 
-            @if ($client)
-                <x-slot:actions>
-                    <x-button label="Volver" icon="o-x-mark" class="btn-secondary" link="/budgets" />
-                    <x-button label="{{ $data['id'] ? 'Actualizar Encabezado' : 'Crear y Continuar' }}" icon="o-check"
-                        class="btn-primary" type="submit" spinner="updateOrCreate" />
-                </x-slot:actions>
-            @endif
+             @if ($client)
+                 <x-slot:actions>
+                     <x-button label="Volver" icon="o-x-mark" class="btn-secondary" link="/budgets" />
+                     <x-button label="{{ $data['id'] ? 'Actualizar Encabezado' : 'Crear y Continuar' }}" icon="o-check"
+                         class="btn-primary" type="submit" spinner="updateOrCreate" />
+                     @php $user = auth()->user() @endphp
+                     @if($data['id'] && $data['status'] === 'approved' && $user && $user->role === 'admin')
+                         <x-button label="Gestionar Pagos" icon="o-currency-dollar" class="btn-info" link="/budget/{{ $data['id'] }}/payments" />
+                     @endif
+                 </x-slot:actions>
+             @endif
         </x-form>
     </x-card>
 
@@ -266,11 +273,13 @@ new class extends Component {
         <x-card title="Detalle de Productos" shadow separator class="col-span-full animate-fade-in-up">
             <x-slot:menu>
                 <div class="flex items-center gap-4">
-                    <span class="text-lg font-bold text-success">Total: $ {{ number_format($data['total'], 2) }}</span>
-                    <x-button label="Aprobar" icon="o-check" class="btn-success btn-sm" 
-                        wire:click="approve"
-                        wire:confirm="¿Seguro que deseas aprobar este presupuesto?" 
-                        spinner="approve" />
+                    <span class="text-lg font-bold text-success">Total: $ {{ number_format($data['total'], 2, ",", ".") }}</span>
+                    @if($data['status'] !== 'approved')
+                        <x-button label="Aprobar" icon="o-check" class="btn-success btn-sm" 
+                            wire:click="approve"
+                            wire:confirm="¿Seguro que deseas aprobar este presupuesto?" 
+                            spinner="approve" />
+                    @endif
                 </div>
             </x-slot:menu>
 
@@ -319,9 +328,9 @@ new class extends Component {
                                         wire:change="updateNotes({{ $product->id }}, $event.target.value)"
                                         class="input input-bordered input-sm w-full" />
                                 </td>
-                                <td class="text-right">$ {{ number_format($product->pivot->price, 2) }}</td>
+                                <td class="text-right">$ {{ number_format($product->pivot->price, 2, ",", ".") }}</td>
                                 <td class="text-right font-bold">$
-                                    {{ number_format($product->pivot->quantity * $product->pivot->price, 2) }}</td>
+                                    {{ number_format($product->pivot->quantity * $product->pivot->price, 2, ",", ".") }}</td>
                                 <td>
                                     <x-button icon="o-trash" wire:click="removeProduct({{ $product->id }})"
                                         class="btn-ghost btn-sm text-error" spinner />

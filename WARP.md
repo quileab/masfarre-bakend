@@ -108,7 +108,7 @@ The app uses **Volt** (single-file Livewire components) located in `resources/vi
 **Key Components:**
 - `dashboard.blade.php`: Calendar view showing budgets by date
 - `budget/crud.blade.php`: Budget creation/editing form
-- `budget/detail.blade.php`: Detailed budget view with products
+
 - `budget/index.blade.php`: Budget listing
 - `products/crud.blade.php`: Product management
 - `users/crud.blade.php`: User management

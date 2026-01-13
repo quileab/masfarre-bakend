@@ -11,7 +11,7 @@
 
 <body>
   <h1>hello</h1>
-  <livewire:carlos />
+
 </body>
 
 </html>

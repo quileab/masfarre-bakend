@@ -28,7 +28,7 @@ new class extends Component {
         $id = str_pad($budget->id, 8, '0', STR_PAD_LEFT);
         $lastName = $budget->client ? Str::slug($budget->client->name) : 'cliente';
         if (empty($lastName)) $lastName = 'cliente';
-        
+
         $filename = "{$id}_{$lastName}.pdf";
         $path = "budgets/{$filename}";
 
@@ -48,12 +48,14 @@ new class extends Component {
             ['key' => 'name', 'label' => 'Presupuesto'],
             ['key' => 'client.name', 'label' => 'Cliente', 'sortable' => false],
             ['key' => 'total', 'label' => 'Monto'],
+            ['key' => 'status', 'label' => 'Estado'],
+            ['key' => 'payments', 'label' => 'Pagos', 'sortable' => false],
         ];
     }
 
     public function budgets()
     {
-        if (auth()->user()->role != 'admin') {
+        if (auth()->user() && auth()->user()->role !== 'admin') {
             $clientId = session('user')['id'] ?? null;
             if ($clientId) {
                 return Budget::where('client_id', $clientId)->with('client')->paginate(15);
@@ -61,7 +63,7 @@ new class extends Component {
                 return Budget::whereNull('client_id')->with('client')->paginate(15); // Or handle as appropriate if no client is selected
             }
         }
-        $result = Budget::with('client')//query()
+        $result = Budget::with('client', 'transactions')//query()
             ->when($this->search, fn($q) => $q->where('name', 'like', "%$this->search%")) // Updated 'name' to 'title'
             ->when($this->client_id, fn($q) => $q->where('client_id', $this->client_id))
             ->orderBy(...array_values($this->sortBy))
@@ -89,42 +91,90 @@ new class extends Component {
         </x-slot:middle>
         <x-slot:actions>
             <x-badge value="{{ $records_count }}" class="badge-primary" />
-            @can('isAdmin')
+            @if(auth()->user() && auth()->user()->role === 'admin')
                 <x-button label="Nuevo" icon="o-check" class="btn-primary" link="/budget" />
-            @endcan
+            @endif
         </x-slot:actions>
     </x-header>
 
     <!-- TABLE  -->
     <x-card>
         <x-table :headers="$headers" :rows="$budgets" :sort-by="$sortBy"
-            link="{{ auth()->user()->role == 'admin' ? 'budget/{id}' : 'budgets/{id}/view' }}" striped>
+            link="{{ auth()->user() && auth()->user()->role === 'admin' ? 'budget/{id}' : 'budgets/{id}/view' }}" striped>
             @scope('cell_total', $budget)
-            <p class="text-right w-full text-warning">$&nbsp;{{ number_format($budget->total, 2) }}</p>
+            <p class="text-right w-full text-warning">$&nbsp;{{ number_format($budget->total, 2, ",", ".") }}</p>
+            @endscope
+            @scope('cell_status', $budget)
+                @if($budget->status === 'approved')
+                    <span class="badge badge-success">Aprobado</span>
+                @elseif($budget->status === 'sent')
+                    <span class="badge badge-warning">Enviado</span>
+                @elseif($budget->status === 'draft')
+                    <span class="badge badge-info">Borrador</span>
+                @elseif($budget->status === 'rejected')
+                    <span class="badge badge-error">Rechazado</span>
+                @else
+                    <span class="badge badge-neutral">{{ $budget->status }}</span>
+                @endif
+            @endscope
+            @scope('cell_payments', $budget)
+                @php
+                    $budgetTotal = $budget->products->sum(function ($product) {
+                        return $product->pivot->price * $product->pivot->quantity;
+                    });
+                    $totalCharges = $budget->transactions->where('type', 'charge')->sum('amount');
+                    $totalPayments = $budget->transactions->where('type', 'payment')->sum('amount');
+                    $finalTotal = $budgetTotal + $totalCharges;
+                    $balance = $finalTotal - $totalPayments;
+                @endphp
+
+                @if($budget->status === 'approved')
+                    <div class="flex flex-col items-end gap-1">
+                        <div class="text-xs text-gray-500">
+                            Pagado: ${{ number_format($totalPayments, 2, ",", ".") }}
+                        </div>
+                        @if($balance > 0)
+                            <div class="text-xs text-error font-semibold">
+                                Pendiente: ${{ number_format($balance, 2, ",", ".") }}
+                            </div>
+                        @else
+                            <div class="text-xs text-success font-semibold">
+                                Saldado
+                            </div>
+                        @endif
+                    </div>
+                @else
+                    <span class="text-xs text-gray-400 italic">Pendiente aprobación</span>
+                @endif
             @endscope
 
              @scope('actions', $budget)
-                 @php
-                     $id = str_pad($budget->id, 8, '0', STR_PAD_LEFT);
-                     $lastName = $budget->client ? \Illuminate\Support\Str::slug($budget->client->name) : 'cliente';
-                     if (empty($lastName)) $lastName = 'cliente';
-                     $filename = "{$id}_{$lastName}.pdf";
-                     $path = "budgets/{$filename}";
-                     $exists = \Illuminate\Support\Facades\Storage::disk('public')->exists($path);
-                 @endphp
-                 <div class="flex gap-1 items-center">
-                    <button wire:click="{{ $exists ? 'share(' . $budget['id'] . ')' : '' }}" 
-                            class="btn btn-sm {{ $exists ? 'btn-ghost text-primary' : 'btn-ghost text-error' }}"
-                            title="{{ $exists ? 'Copiar enlace público' : 'PDF no generado' }}">
-                        <x-icon name="{{ $exists ? 'o-share' : 'o-link-slash' }}" class="w-6 h-6" />
-                    </button>
-                    @if($exists)
-                        <a href="{{ asset('storage/' . $path) }}" target="_blank" class="btn btn-sm btn-ghost text-success" title="Ver PDF">
-                            <x-icon name="o-link" class="w-6 h-6" />
-                        </a>
-                    @endif
-                 </div>
-             @endscope
+                  @php
+                      $id = str_pad($budget->id, 8, '0', STR_PAD_LEFT);
+                      $lastName = $budget->client ? \Illuminate\Support\Str::slug($budget->client->name) : 'cliente';
+                      if (empty($lastName)) $lastName = 'cliente';
+                      $filename = "{$id}_{$lastName}.pdf";
+                      $path = "budgets/{$filename}";
+                      $exists = \Illuminate\Support\Facades\Storage::disk('public')->exists($path);
+                  @endphp
+                  <div class="flex gap-1 items-center">
+                     <button wire:click="{{ $exists ? 'share(' . $budget['id'] . ')' : '' }}"
+                             class="btn btn-sm {{ $exists ? 'btn-ghost text-primary' : 'btn-ghost text-error' }}"
+                             title="{{ $exists ? 'Copiar enlace público' : 'PDF no generado' }}">
+                         <x-icon name="{{ $exists ? 'o-share' : 'o-link-slash' }}" class="w-6 h-6" />
+                     </button>
+                     @if($exists)
+                         <a href="{{ asset('storage/' . $path) }}" target="_blank" class="btn btn-sm btn-ghost text-success" title="Ver PDF">
+                             <x-icon name="o-link" class="w-6 h-6" />
+                         </a>
+                     @endif
+                     @if($budget->status === 'approved' && auth()->check() && auth()->user()->role === 'admin')
+                         <a href="/budget/{{ $budget->id }}/payments" class="btn btn-sm btn-ghost text-info" title="Gestionar Pagos">
+                             <x-icon name="o-currency-dollar" class="w-6 h-6" />
+                         </a>
+                     @endif
+                  </div>
+              @endscope
         </x-table>
     </x-card>
 

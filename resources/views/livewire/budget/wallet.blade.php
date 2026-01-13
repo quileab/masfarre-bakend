@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 new class extends Component {
     use AuthorizesRequests;
+
     public Budget $budget;
 
     // Form properties
@@ -21,6 +22,12 @@ new class extends Component {
     {
         $this->budget = $budget;
         $this->date = now()->format('Y-m-d');
+
+        // Ensure only admins can access payment management
+        $user = auth()->user();
+        if (!$user || $user->role !== 'admin') {
+            abort(403, 'No tienes permisos para acceder a esta página.');
+        }
     }
 
     public function saveTransaction()
@@ -56,6 +63,18 @@ new class extends Component {
         $transaction->delete();
     }
 
+    public function generatePaymentsPdf()
+    {
+        $this->authorize('manageTransactions', $this->budget);
+
+        try {
+            $path = \App\Http\Controllers\PdfController::generatePaymentsPdf($this->budget);
+            $this->dispatch('pdf-generated', path: asset('storage/' . $path));
+        } catch (\Exception $e) {
+            $this->error('Error generando el PDF: ' . $e->getMessage());
+        }
+    }
+
     public function with()
     {
         $budgetTotal = $this->budget->products->sum(function ($product) {
@@ -84,44 +103,54 @@ new class extends Component {
     }
 }; ?>
 
-<div class="p-6 bg-base-100 rounded-xl shadow-sm border border-base-200">
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-        <div>
-            <h2 class="text-2xl font-bold">Cuenta Corriente</h2>
-            <p class="text-base-content/70">Gestiona pagos y adicionales del presupuesto</p>
-        </div>
+    <div class="p-6 bg-base-100 rounded-xl shadow-sm border border-base-200">
+     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+         <div>
+             <h2 class="text-2xl font-bold">Cuenta Corriente</h2>
+             <p class="text-base-content/70">Gestiona pagos y adicionales del presupuesto</p>
+         </div>
 
-        @if(auth()->user()->is_admin)
-            <button onclick="transaction_modal.showModal()" class="btn btn-primary">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-                Registrar Movimiento
-            </button>
-        @endif
-    </div>
+         <div class="flex gap-2">
+             @php $user = auth()->user() @endphp
+             @if($user && $user->role === 'admin')
+                 <button onclick="transaction_modal.showModal()" class="btn btn-primary">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                         stroke="currentColor">
+                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                     </svg>
+                     Registrar Movimiento
+                 </button>
+                 <button wire:click="generatePaymentsPdf" class="btn btn-outline btn-info">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                         stroke="currentColor">
+                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                     </svg>
+                     Generar PDF
+                 </button>
+             @endif
+         </div>
+     </div>
 
     <!-- Stats Cards -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
         <div class="stats shadow bg-base-300">
             <div class="stat">
                 <div class="stat-title">Presupuesto Inicial</div>
-                <div class="stat-value text-primary text-2xl">${{ number_format($budgetTotal, 2) }}</div>
+                <div class="stat-value text-primary text-2xl">${{ number_format($budgetTotal, 2, ",", ".") }}</div>
             </div>
         </div>
 
         <div class="stats shadow bg-base-300">
             <div class="stat">
                 <div class="stat-title">Adicionales</div>
-                <div class="stat-value text-warning text-2xl">+ ${{ number_format($totalCharges, 2) }}</div>
+                <div class="stat-value text-warning text-2xl">+ ${{ number_format($totalCharges, 2, ",", ".") }}</div>
             </div>
         </div>
 
         <div class="stats shadow bg-base-300">
             <div class="stat">
                 <div class="stat-title">Pagado</div>
-                <div class="stat-value text-success text-2xl">- ${{ number_format($totalPayments, 2) }}</div>
+                <div class="stat-value text-success text-2xl">- ${{ number_format($totalPayments, 2, ",", ".") }}</div>
             </div>
         </div>
 
@@ -129,7 +158,7 @@ new class extends Component {
             <div class="stat">
                 <div class="stat-title font-bold">Saldo Pendiente</div>
                 <div class="stat-value {{ $balance > 0 ? 'text-error' : 'text-success' }} text-3xl">
-                    ${{ number_format($balance, 2) }}
+                    ${{ number_format($balance, 2, ",", ".") }}
                 </div>
             </div>
         </div>
@@ -144,7 +173,8 @@ new class extends Component {
                     <th>Descripción</th>
                     <th>Tipo</th>
                     <th class="text-right">Monto</th>
-                    @if(auth()->user()->is_admin)
+                    @php $user = auth()->user() @endphp
+                    @if($user && $user->role === 'admin')
                         <th class="text-right">Acciones</th>
                     @endif
                 </tr>
@@ -178,9 +208,10 @@ new class extends Component {
                         </td>
                         <td
                             class="text-right font-mono font-bold {{ $transaction->type === 'payment' ? 'text-success' : 'text-warning' }}">
-                            {{ $transaction->type === 'payment' ? '-' : '+' }} ${{ number_format($transaction->amount, 2) }}
+                            {{ $transaction->type === 'payment' ? '-' : '+' }} ${{ number_format($transaction->amount, 2, ",", ".") }}
                         </td>
-                        @if(auth()->user()->is_admin)
+                        @php $user = auth()->user() @endphp
+                        @if($user && $user->role === 'admin')
                             <td class="text-right">
                                 <button wire:click="deleteTransaction({{ $transaction->id }})"
                                     wire:confirm="¿Estás seguro de eliminar este movimiento?"
@@ -254,6 +285,16 @@ new class extends Component {
         document.addEventListener('livewire:initialized', () => {
             @this.on('transaction-saved', () => {
                 transaction_modal.close();
+            });
+
+            @this.on('pdf-generated', (event) => {
+                const link = document.createElement('a');
+                link.href = event.path;
+                link.download = 'reporte-pagos.pdf';
+                link.target = '_blank';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
             });
         });
     </script>

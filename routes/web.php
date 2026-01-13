@@ -65,8 +65,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
   Volt::route('/dashboard', 'dashboard');
   Volt::route('/users', 'users.index');
   Volt::route('/user/{user?}', 'users.crud');
-  Volt::route('/users/{user}/payments', 'users.payments');
-  Volt::route('/carlos', 'carlos');
+
+
   Volt::route('/posts', 'posts.index');
   Volt::route('/post/{post?}', 'posts.crud');
   Volt::route('/products', 'products.index');
@@ -75,9 +75,5 @@ Route::middleware(['auth', 'admin'])->group(function () {
   Volt::route('/category/{category?}', 'category.crud');
   Volt::route('/budgets', 'budget.index');
   Volt::route('/budget/{budget?}', 'budget.crud');
-});
-
-Route::middleware(['auth'])->group(function () {
-  Volt::route('/budgets', 'budget.index');
-  Volt::route('/budgets/{budget}/view', 'budget.user-show');
+  Volt::route('/budget/{budget}/payments', 'budget.wallet');
 });

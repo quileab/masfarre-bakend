@@ -117,8 +117,10 @@ new class extends Component {
             @if($user->exists)
                 <x-button label="Presupuestos" icon="o-banknotes" link="/budgets?client_id={{ $user->id }}"
                     class="btn-outline btn-info" />
-                <x-button label="Pagos" icon="o-currency-dollar" link="/users/{{ $user->id }}/payments"
+                @if($user && $user->role === 'admin')
+                    <x-button label="Ver Presupuestos" icon="o-document-text" link="/budgets"
                     class="btn-outline btn-success" />
+                @endif
                 <x-dropdown>
                     <x-slot:trigger>
                         <x-button icon="o-trash" class="btn-outline btn-error" />

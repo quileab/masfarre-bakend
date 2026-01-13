@@ -53,7 +53,7 @@
                     <livewire:bookmarks />
                 @endif
                 @if(auth()->user()->role == 'admin')
-                    <x-menu-item title="Dashboard" icon="o-sparkles" link="/" />
+                    <x-menu-item title="Dashboard" icon="o-chart-pie" link="/dashboard" />
                     <x-menu-item title="Usuarios" icon="o-users" link="/users" />
                     <x-menu-item title="Productos" icon="o-cube" link="/products" />
                     <x-menu-item title="Categorias" icon="o-users" link="/categories" />
