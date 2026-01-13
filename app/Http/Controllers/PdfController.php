@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Budget;
+use App\Models\BudgetTransaction;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -104,6 +105,22 @@ class PdfController extends Controller
 
         $filename = "pagos_{$id}_{$lastName}.pdf";
         $path = "budgets/payments/{$filename}";
+        Storage::disk('public')->put($path, $pdf->output());
+
+        return $path;
+    }
+
+    public static function generateTransactionReceiptPdf(BudgetTransaction $transaction)
+    {
+        $formatter = new \NumberFormatter('es', \NumberFormatter::SPELLOUT);
+        $amountInWords = ucfirst($formatter->format($transaction->amount));
+
+        $pdf = PDF::loadView('pdf.receipt', compact('transaction', 'amountInWords'));
+        
+        $id = str_pad($transaction->id, 6, '0', STR_PAD_LEFT);
+        $filename = "recibo_{$id}.pdf";
+        
+        $path = "budgets/receipts/{$filename}";
         Storage::disk('public')->put($path, $pdf->output());
 
         return $path;

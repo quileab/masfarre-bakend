@@ -41,13 +41,21 @@ new class extends Component {
             'date' => 'required|date',
         ]);
 
-        $this->budget->transactions()->create([
+        $transaction = $this->budget->transactions()->create([
             'user_id' => Auth::id(),
             'amount' => $this->amount,
             'description' => $this->description,
             'type' => $this->type,
             'transaction_date' => $this->date,
         ]);
+
+        // Generate Receipt PDF
+        try {
+            $path = \App\Http\Controllers\PdfController::generateTransactionReceiptPdf($transaction);
+            $this->dispatch('pdf-generated', path: asset('storage/' . $path));
+        } catch (\Exception $e) {
+            $this->error('Movimiento guardado, pero error al generar recibo: ' . $e->getMessage());
+        }
 
         $this->reset(['amount', 'description', 'type']);
         $this->date = now()->format('Y-m-d');
